@@ -30,6 +30,8 @@ def print_scores(entities:dict):
     )
     print(table)
 
+    return table.get_string()
+
 
 def draw_knowledge_graph(data, file_name=None):
     G = nx.DiGraph()

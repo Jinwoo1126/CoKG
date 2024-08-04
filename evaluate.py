@@ -11,15 +11,20 @@ from src.utils import print_scores
 def evaluate_rouge(hypotheses, references):
     rouge_score = rouge(hypotheses, references)
 
+    eval_string = ''
     print("ROUGE Scores")
     print("============")
     print("ROUGE-1")
-    print_scores(rouge_score['rouge1'])
+    rouge1 = print_scores(rouge_score['rouge1'])
     print("ROUGE-2")
-    print_scores(rouge_score['rouge2'])
+    rouge2 = print_scores(rouge_score['rouge2'])
     print("ROUGE-L")
-    print_scores(rouge_score['rougeL'])
+    rougel = print_scores(rouge_score['rougeL'])
     print("============")
+
+    eval_string += '\nROUGE-1\n' + rouge1 + '\nROUGE-2\n' + rouge2 + '\nROUGE-L\n' + rougel + '\n\n'
+
+    return eval_string
 
 
 def evaluate_geval(args, hypotheses, references):
@@ -33,11 +38,16 @@ def evaluate_geval(args, hypotheses, references):
     #geval.run()
     geval_score = geval.evaluate()
 
+    eval_string = ''
     print("GEval Scores")
     print("============")
     print("GEval")
-    print_scores(geval_score)
+    geval = print_scores(geval_score)
     print("============")
+
+    eval_string += '\nGEval\n' + geval + '\n\n'
+
+    return eval_string
 
 
 if __name__ == "__main__":
@@ -55,14 +65,19 @@ if __name__ == "__main__":
     hypotheses = [r['Summary'] for r in results]
 
     if args.type == 'rouge':
-        evaluate_rouge(hypotheses, references)
+        eval = evaluate_rouge(hypotheses, references)
     elif args.type == 'geval':
-        evaluate_geval(args, hypotheses, references)
+        eval = evaluate_geval(args, hypotheses, references)
     elif args.type == 'all':
-        evaluate_rouge(hypotheses, references)
-        evaluate_geval(args, hypotheses, references)
+        eval = ''
+        eval += evaluate_rouge(hypotheses, references)
+        eval += evaluate_geval(args, hypotheses, references)
     else:
-        evaluate_rouge(hypotheses, references)
-        evaluate_geval(args, hypotheses, references)
+        eval = ''
+        eval += evaluate_rouge(hypotheses, references)
+        eval += evaluate_geval(args, hypotheses, references)
+
+    with open(args.save_fp + 'evaluation.txt', 'w') as f:
+        f.write(eval)
 
     
