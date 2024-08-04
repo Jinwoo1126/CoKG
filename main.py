@@ -1,6 +1,8 @@
 import os
 import argparse
+import json
 
+from tqdm import tqdm
 from langchain_openai import ChatOpenAI
 from datasets import load_dataset
 from dotenv import load_dotenv
@@ -14,10 +16,14 @@ from src.utils import (random_article,
 load_dotenv()
 openai_key = os.getenv("OPENAI_API")
 
-
 if __name__ == "__main__":
-    ## set summary type
-    type = 'CoKG'
+    ## Parse arguments
+    argparser = argparse.ArgumentParser()
+    argparser.add_argument("-t", "--type", type=str, default='CoKG', help="Type of summary")
+    argparser.add_argument("-m", "--model", type=str, default='gpt-4o', help="Model to use")
+    argparser.add_argument("-n", "--num_samples", type=int, default=100, help="Number of samples to use")
+    argparser.add_argument("-o", "--output", type=str, default='results/results.json', help="Output file")
+    args = argparser.parse_args()
 
     ## set llm model
     llm = ChatOpenAI(
@@ -32,15 +38,21 @@ if __name__ == "__main__":
     ## Load dataset & sample random article
     ds = load_dataset("alexfabbri/multi_news", "1.0.0")
     train_data = ds['train'].select(range(100))
-    sample = random_article(train_data)
 
-    ## get summary result
-    summary = Summary(type='CoKG')
-    result =  summary.summairze(llm, sample)
+    ## get summary results
+    results = []
+    for i in tqdm(args.num_samples):
+        sample = random_article(train_data)
+        summary = Summary(type='CoKG')
+        result =  summary.summairze(llm, sample)
+        result['Document'] = sample['document']
+        result['Ground Truth'] = sample['summary']
 
-    ## print result
-    breakpoint()
-    print(result)
+        results.append(result)
+
+    ##save results
+    with open(args.output, 'w') as f:
+        json.dump(results, f, indent=4)
 
     ## draw knowledge graph if type is CoKG
     '''
