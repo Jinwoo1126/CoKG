@@ -28,6 +28,6 @@ Summary:
 {{Summary}}
 
 
-Evaluation Form (scores ONLY):
+Evaluation Form (scores ONLY in json format):
 
 - Relevance:

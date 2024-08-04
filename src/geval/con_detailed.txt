@@ -15,7 +15,6 @@ Evaluation Steps:
 2. Read the summary and compare it to the article. Check if the summary contains any factual errors that are not supported by the article.
 3. Assign a score for consistency based on the Evaluation Criteria.
 
-
 Example:
 
 
@@ -28,6 +27,6 @@ Summary:
 {{Summary}}
 
 
-Evaluation Form (scores ONLY):
+Evaluation Form (scores ONLY in json format):
 
 - Consistency:
