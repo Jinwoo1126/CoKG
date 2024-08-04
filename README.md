@@ -34,4 +34,12 @@ $ python main.py
 $ python evaluate.py
 ```
 
+#### (optional)
+```shell
+"-t", "--type"          : Evaluation Type(default : All, ['rouge', 'geval', 'all']])
+"-m", "--model"         : chat model(default : gpt-4o-mini)
+"-r", "--results"       : result file path(default : results/results.json)
+"-s", "--save_fp"       : save_path(default : results/)
+```
+
 
