@@ -2,6 +2,7 @@ import os
 import random
 import networkx as nx
 import matplotlib.pyplot as plt
+from prettytable import PrettyTable
 
 from collections import Counter
 
@@ -12,9 +13,23 @@ def print_random_article(ds):
     print(f"document: {article['document']}\n")
     print(f"summary: {article['summary']}")
 
+
 def random_article(ds):
     random_index = random.randint(0, len(ds) - 1)
     return ds[random_index]
+
+
+def print_scores(entities:dict):
+    n = len(entities)
+    keys = list(entities.keys())
+    table = PrettyTable(keys)
+    if (n == 0):
+        n = 1
+    table.add_row(
+        [round(entities[key], 4) for key in keys]
+    )
+    print(table)
+
 
 def draw_knowledge_graph(data, file_name=None):
     G = nx.DiGraph()
