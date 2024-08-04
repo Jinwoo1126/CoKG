@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     ## set llm model
     llm = ChatOpenAI(
-        model="gpt-4o",
+        model=args.model,
         temperature=0,
         max_tokens=None,
         timeout=None,

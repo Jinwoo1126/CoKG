@@ -8,7 +8,10 @@ from src.eval import rouge, GEval
 from src.utils import print_scores
 
 
-def evaluate_rouge(hypotheses, references):
+def evaluate_rouge(results):
+    references = [r['Ground Truth'] for r in results]
+    hypotheses = [r['Summary'] for r in results]
+
     rouge_score = rouge(hypotheses, references)
 
     eval_string = ''
@@ -27,7 +30,7 @@ def evaluate_rouge(hypotheses, references):
     return eval_string
 
 
-def evaluate_geval(args, hypotheses, references):
+def evaluate_geval(args, results):
     load_dotenv()
     openai_key = os.getenv("OPENAI_API")
 
@@ -65,17 +68,17 @@ if __name__ == "__main__":
     hypotheses = [r['Summary'] for r in results]
 
     if args.type == 'rouge':
-        eval = evaluate_rouge(hypotheses, references)
+        eval = evaluate_rouge(results)
     elif args.type == 'geval':
-        eval = evaluate_geval(args, hypotheses, references)
+        eval = evaluate_geval(args, results)
     elif args.type == 'all':
         eval = ''
-        eval += evaluate_rouge(hypotheses, references)
-        eval += evaluate_geval(args, hypotheses, references)
+        eval += evaluate_rouge(results)
+        eval += evaluate_geval(args, results)
     else:
         eval = ''
-        eval += evaluate_rouge(hypotheses, references)
-        eval += evaluate_geval(args, hypotheses, references)
+        eval += evaluate_rouge(results)
+        eval += evaluate_geval(args, results)
 
     with open(args.save_fp + 'evaluation.txt', 'w') as f:
         f.write(eval)
