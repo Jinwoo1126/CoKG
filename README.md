@@ -31,7 +31,7 @@ $ python main.py
 
 #### 2. **Run Evaluate**
 ```shell
-$ python evaluate.py
+$ python evaluate.py -t 'all'
 ```
 
 #### (optional)
