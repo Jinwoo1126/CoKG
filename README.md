@@ -31,7 +31,7 @@ $ python main.py
 
 #### 2. **Run Evaluate**
 ```shell
-$ python evaluate.py
+$ python evaluate.py -t 'all'
 ```
 
 #### (optional)
@@ -42,4 +42,21 @@ $ python evaluate.py
 "-s", "--save_fp"       : save_path(default : results/)
 ```
 
+## Results
 
+### ROUGE-1
+| precision | recall | fmeasure |
+|-----------|--------|----------|
+| 0.9286    | 0.084  | 0.1497   |
+### ROUGE-2
+| precision | recall | fmeasure |
+|-----------|--------|----------|
+| 0.5239    | 0.0479 | 0.0852   |
+### ROUGE-L
+| precision | recall | fmeasure |
+|-----------|--------|----------|
+| 0.6589    | 0.0599 | 0.1066   |
+### GEval
+| coherence | consistency | fluency | relevance |
+|-----------|-------------|---------|-----------|
+| 4.05      | 4.15        | 2.75    | 4.4       |
