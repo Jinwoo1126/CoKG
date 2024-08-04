@@ -1,28 +1,25 @@
 import os
 import argparse
-import random
 
 from langchain_openai import ChatOpenAI
 from datasets import load_dataset
 from dotenv import load_dotenv
 
-from src.summary import Base_Summary
+from src.summary import Summary
+from src.utils import (random_article,
+                       draw_knowledge_graph)
 
+
+## Load .env and OpenAI API key
 load_dotenv()
 openai_key = os.getenv("OPENAI_API")
 
-def print_random_article(ds):
-    random_index = random.randint(0, len(ds) - 1)
-    article = ds[random_index]
-    print(f"document: {article['document']}\n")
-    print(f"summary: {article['summary']}")
-
-def random_article(ds):
-    random_index = random.randint(0, len(ds) - 1)
-    return ds[random_index]
 
 if __name__ == "__main__":
+    ## set summary type
+    type = 'CoKG'
 
+    ## set llm model
     llm = ChatOpenAI(
         model="gpt-4o",
         temperature=0,
@@ -32,8 +29,21 @@ if __name__ == "__main__":
         api_key=openai_key,
     )
 
+    ## Load dataset & sample random article
     ds = load_dataset("alexfabbri/multi_news", "1.0.0")
     train_data = ds['train'].select(range(100))
     sample = random_article(train_data)
 
-    print(Base_Summary(llm, sample))
+    ## get summary result
+    summary = Summary(type='CoKG')
+    result =  summary.summairze(llm, sample)
+
+    ## print result
+    breakpoint()
+    print(result)
+
+    ## draw knowledge graph if type is CoKG
+    '''
+    if type == 'CoKG':
+        draw_knowledge_graph(result['Knowledge Graph'])
+    '''

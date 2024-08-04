@@ -1,0 +1,41 @@
+Document: {Document}
+Based on the given document, identify the entities and relationships that are the components of the knowledge graph for summarization.
+
+knowledge Graph Components:
+- Head (Subject): The entity to be described
+- Relation (Predicate): The relationship between the subject and object
+- Tail (Object): The entity which describes or be related to the subject
+
+Remember that you should obtain the knowledge graph components with sequential steps as followings.
+
+Step 1. Identify Entities:
+Identify and extract entities from the document.
+Ensure that you capture the entities and describe them in simple and intuitive words. (e.g., people, places, organizations, key concepts, etc.).
+
+Step 2. Identify Relations:
+Identify and extract relations between the entities extracted from the document.
+Focus on specifying how predictates have connections with the entities.
+Ensure that you capture the relations and describe them in simple and intuitive words.
+
+Step 3. Evaluate Relation Strength:
+Identify and evaluate the strength of relations between the entities extracted from the document, assigning a score from 1 to 10 (1 being weakest, 10 strongest, and 5 middle). 
+Evaluate strength based on frequency (how often the relation appears) and contextual importance (how critical the relation is to the document's main themes). 
+Combine these evaluations to assign an overall score for each relation.
+
+Step 4. Review Document Information:
+Please check that the knowledge graph includes the information from the given document.
+Compare the knowledge graph with the given document to find any missing entities and relationships. 
+If you find any, please update the knowledge graph accordingly.
+
+Step 5. Consolidate Entities and Relations:
+Consolidate entities considered the same based on context into a consistent representation. (e.g., "IBM" and "International Business Machines" into "IBM", "Korean Netflix series" and "Korea Netflix series" into "Korean Netflix series").
+Consolidate relationships considered the same based on context into a consistent representation. (e.g., "works at" and "employed by" into "employed by", "resides in" and "lives in" into "resides in").
+
+Step 6. Summarize Document:
+Summarize the given document based on entities that have the strongest and most frequent relations in the extracted knowledge graph.
+Exclude unnecessary details and include only the essential core content in the summary.
+The summary is cohesive, flow naturally, and include only objective facts.
+
+The result in the specified JSON format. The keys in the JSON should be 'Knowledge Graph' and 'Summary'.
+For the knowledge graph, the key should be 'Head', and the values should be a list containing 'Relation', 'Tail' and 'Relation Strength', respectively.
+Answer in JSON without unnecessary introductory text or meta comments.
