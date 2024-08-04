@@ -65,6 +65,7 @@ class GEval:
 
     def run(self):
         for metric in self.metrics.keys():
+            results = []
             for i, (hyp, ref) in tqdm(enumerate(zip(self.hypotheses, self.references))):    
                 prompt = copy.deepcopy(self.metrics[metric])
                 cur_prompt = prompt.replace('{{Document}}', ref).replace('{{Summary}}', hyp)
@@ -92,17 +93,24 @@ class GEval:
                     'Responses': all_responses
                 }
 
+                results.append(new_json)
+
             os.makedirs(self.args.save_fp, exist_ok=True)
             with open(os.path.join(self.args.save_fp, metric + '.json'), 'w') as f:
-                json.dump(new_json, f, indent=4)
+                json.dump(results, f, indent=4)
 
     def evaluate(self):
-        scores = {}
+        scores = {'coherence': 0, 
+                  'consistency': 0, 
+                  'fluency': 0, 
+                  'relevance': 0}
         for metric in self.metrics.keys():
             with open (os.path.join(self.args.save_fp, metric + '.json'), 'r') as f:
-                all_responses = json.load(f)["Responses"]
-                all_scores = [parse_output(x) for x in all_responses]
-                score = sum(all_scores) / len(all_scores)
-                scores[metric] = score
+                all_responses = json.load(f)
+                for response in all_responses:
+                    all_scores = [parse_output(x) for x in response['Responses']]
+                    score = sum(all_scores) / len(all_scores)
+                    scores[metric] += score
+                scores[metric] /= len(all_responses)
 
         return scores
