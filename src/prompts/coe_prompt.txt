@@ -1,0 +1,67 @@
+Task description: Now you are a multi-document summary generator. 
+Your <Input> is multiple texts with similar topics. 
+You will extract common key information from them and integrate them into a summary.
+
+----
+
+[The process of summary reasoning]:
+(1) Specific event extraction: for each text in <Input>, extract the fine-grained events of the main event body.
+(2) Event abstraction and generalization: analyze each fine-grained event extracted in step (1), extract their common feature, abstract and generalize them into a more concise and refined result. For example, [children's program], [weather forecast], [singing program], [TV shopping] can be generalized as [TV program].
+(3) Common event statistics: for each abstract event generalized in step (2), find out which text it covers and select the event that covers most of the texts.
+(4) Summary generation: based on chronological order or level of importance, integrate the events selected in step (3) to form a concise summary.
+
+----
+
+[The example of summary reasoning]:
+<Input>:
+text 1: LAHORE • A bomb targeting Pakistani police outside a major Sufi shrine in the city of Lahore yesterday killed at least 10 people and
+wounded more than 20. The blast, occurring a day after the start of the Muslim holy month of Ramadan, went off at a police checkpoint near the
+Data Darbar, one of the largest Muslim shrines in South Asia, which attracts tens of thousands of visitors a year.
+text 2: Pakistan bombing kills at least nine people, police the target outside Lahore shrine A powerful bomb has exploded near security forces
+guarding a famous Sufi shrine in the eastern city of Lahore, Pakistan, killing at least nine people and wounding several others.Militant violence
+has declined sharply in Pakistan following a sustained crackdown in recent years and over the past two years Lahore, Pakistan's second-largest city,
+has been free of the kind of attacks that were once common.
+text 3: LAHORE, Pakistan (AP) - A powerful bomb exploded near security forces guarding a famous Sufi shrine in the eastern city of Lahore on
+Wednesday, killing at least eleven people and wounding 20 others, police said.City police chief Ghazanfar Ali said police officers were the
+apparent target of bombing outside the shrine which is known as Data Darbar, and where a famous Sufi saint Ali Hajveri is buried.
+text 4: LAHORE, Pakistan (AP)—A powerful bomb exploded near security forces guarding a famous Sufi shrine in Pakistan onWednesday,
+killing at least five people and wounding 23 others, police said. ”It seems police officers who were doing their routine duty outside the Data
+Darbar shrine were the target,” Ali said, adding that some pilgrims and passers-by were among those wounded.
+text 5: LAHORE, Pakistan: A bomb targeting Pakistani police outside a Sufi shrine in the city of Lahore onWednesday (May 8) killed nine people,
+officials said.We are collecting forensic evidences to ascertain the nature of the blast," said Ashfaq Khan, deputy inspector general of police
+operations in Lahore, adding that nine people were killed and 24 wounded.
+text 6: LAHORE, Pakistan (Reuters) - A bomb targeting Pakistani police outside a major Sufi shrine in the city of Lahore onWednesday killed at
+least 10 people and wounded more than 20, officials said.Militant violence has since declined sharply in Pakistan after a sustained crackdown
+following the country’ s deadliest attack in 2014, which killed more than 150 people, many children, at a school in the western city of Peshawar.
+
+<Reasoning process>:
+(1)Specific event extraction result
+text 1: A bomb targeting Pakistani police outside a major Sufi shrine in the city of Lahore ; A bomb killed at least 10 people ; The blast went off at
+a police checkpoint near the Data Darbar
+text 2: Pakistan bombing kills at least nine people; A powerful bomb has exploded near security forces guarding a famous Sufi shrine in the
+eastern city of Lahore; Militant violence has declined sharply in Pakistan following a sustained crackdown
+text 3: A powerful bomb exploded near security forces guarding a famous Sufi shrine in the eastern city of Lahore ; A bomb killed at least eleven
+people ; City police chief said police officers were the apparent target of bombing
+text 4: A powerful bomb exploded near security forces guarding a famous Sufi shrine in Pakistan ; A bomb killed at least five people
+text 5: A bomb targeting Pakistani police outside a Sufi shrine in the city of Lahore ; A bomb killed nine people ; Police are collecting forensic
+evidences to ascertain the nature of the blast
+text 6: A bomb targeting Pakistani police outside a major Sufi shrine in the city of Lahore ; A bomb killed at least 10 people ; Militant violence has
+since declined sharply ; A sustained crackdown attack in 2014 at a school in the western city of Peshawar
+(2)Event abstraction and statistical results
+abstract event 1: A bomb targeting police near the Data Darbar Sufi shrine in Lahore, Pakistan (text1, text2, text3, text4, text5, text6)
+abstract event 2: A bomb killed at least 10 people (text1, text2, text3, text4, text5, text6)
+abstract event 3: Militant violence has declined sharply (text2, text6)
+abstract event 4: Police officers were the apparent target of bombing (text3, text5)
+abstract event 5: A sustained crackdown attack in 2014 at a school in the western city of Peshawar (text6)
+Select abstract event 1 and abstract event 2.
+(3)Final summary
+A bomb targeting police near the Data Darbar Sufi shrine in Lahore, Pakistan, killed at least 10 people.
+
+<Output>:
+A bomb targeting police near the Data Darbar Sufi shrine in Lahore, Pakistan, killed at least 10 people.
+
+----
+
+Referring to [The process of summary reasoning] and [The example of summary reasoning], integrate the following input into a concise summary
+<Input>: {Document}
+<Output>:
