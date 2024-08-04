@@ -14,7 +14,6 @@ Evaluation Steps:
 2. Read the summary and compare it to the news article. Check if the summary covers the main topic and key points of the news article, and if it presents them in a clear and logical order.
 3. Assign a score for coherence on a scale of 1 to 5, where 1 is the lowest and 5 is the highest based on the Evaluation Criteria.
 
-
 Example:
 
 
@@ -27,6 +26,6 @@ Summary:
 {{Summary}}
 
 
-Evaluation Form (scores ONLY):
+Evaluation Form (scores ONLY in json format):
 
 - Coherence:
