@@ -13,6 +13,11 @@ CoKG(Chain_of_Knowledge_Graph) Prompting Method for Text Summarization
 $ pip install -r requirements.txt
 ```
 
+```shell
+## .env
+OPENAI_API = "sk-xxx"
+```
+
 ### Run Scripts
 
 
