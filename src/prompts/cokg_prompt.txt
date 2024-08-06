@@ -32,9 +32,10 @@ Consolidate entities considered the same based on context into a consistent repr
 Consolidate relationships considered the same based on context into a consistent representation. (e.g., "works at" and "employed by" into "employed by", "resides in" and "lives in" into "resides in").
 
 Step 6. Summarize Document:
-Summarize the given document based on entities that have the strongest and most frequent relations in the extracted knowledge graph.
-Exclude unnecessary details and include only the essential core content in the summary.
-The summary is cohesive, flow naturally, and include only objective facts.
+Summarize the given document by focusing on entities with the strongest and most frequent relations in the extracted knowledge graph. 
+Ensure the summary is cohesive, and includes key details and context for a comprehensive understanding of the main entities and their relationships.
+Use key terms and phrases from the original document in your summary for accuracy, minimal loss of information, and credibility.
+Maintain a logical flow and highlight the impact and relevance of these relationships while excluding unnecessary details.
 
 The result in the specified JSON format. The keys in the JSON should be 'Knowledge Graph' and 'Summary'.
 For a knowledge graph, it should be a dictionary with 'Head' as the key, and the values should be a matched list with 'Relation', 'Tail', and 'Relation Strength' as the keys, respectively.

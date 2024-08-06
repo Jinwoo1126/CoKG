@@ -1,4 +1,3 @@
-
 ROUGE-1
 +----------------+-------------+---------------+--------------+
 | precision_mean | recall_mean | fmeasure_mean | fmeasure_std |

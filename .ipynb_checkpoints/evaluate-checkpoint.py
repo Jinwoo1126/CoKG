@@ -70,7 +70,7 @@ if __name__ == "__main__":
 
     references = [r['Ground Truth'] for r in results]
     hypotheses = [r['Summary'] for r in results]
-    method_type = args.results.split("/")[-1].split("_")[0]
+    method_type = args.results.split("/")[-1][:-13]
     
     if args.type == 'rouge':
         eval, score_df = evaluate_rouge(hypotheses, references)
@@ -90,4 +90,4 @@ if __name__ == "__main__":
     with open(args.save_fp + f'{method_type}_evaluation.txt', 'w') as f:
         f.write(eval)
     
-    score_df.to_csv(args.save_fp + f'{method_type}_raw_evaluation.csv')
+    score_df.to_csv(args.save_fp + f'{method_type}_raw_evaluation.csv', index=False)

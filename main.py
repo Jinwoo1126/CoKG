@@ -15,9 +15,8 @@ from src.utils import draw_knowledge_graph
 
 ## Load .env and OpenAI API key
 load_dotenv()
-# openai_key = os.getenv("OPENAI_API")
-openai_key = 'sk-WrSL1EoYibpIvZ-k--v5rn5TswjaGulzKCAXZxwc0KT3BlbkFJ5v-OWSnRZX8hmUl1YGFdzflQBYNC0KUBvf98W37RUA'
-# 시드 설정
+
+# Seed
 seed = 42
 random.seed(seed)
 np.random.seed(seed)
@@ -32,7 +31,7 @@ if __name__ == "__main__":
     argparser.add_argument("-o", "--output", type=str, default='results/results.json', help="Output file")
     args = argparser.parse_args()
 
-    ## set llm model
+    # set llm model
     llm = ChatOpenAI(
         model="gpt-4o",
         temperature=0,
@@ -41,7 +40,7 @@ if __name__ == "__main__":
         max_retries=2,
         api_key=openai_key,
     )
-
+    
     ## Load dataset & sample random article
     ds = load_dataset("alexfabbri/multi_news", "1.0.0")
     test_data = ds['test'].shuffle(seed=seed).select(range(100))
@@ -59,7 +58,7 @@ if __name__ == "__main__":
         with open(args.output, 'w') as f:
             json.dump(results, f, indent=4)
             
-        ## draw knowledge graph if type is CoKG
+        # draw knowledge graph if type is CoKG
         if args.type == 'CoKG':
             draw_knowledge_graph(result['Knowledge Graph'], f'CoKG_{str(idx+1).zfill(3)}')
 
