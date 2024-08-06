@@ -1,2 +1,0 @@
-Summarize the below Document which include multiple texts with similar topics.
-Document: {Document}
