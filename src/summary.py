@@ -10,20 +10,21 @@ current_file_path = os.path.abspath(__file__)
 current_dir = os.path.dirname(current_file_path)
 
 class Summary:
-    def __init__(self, type:str):
+    def __init__(self, summary_type:str):
         self.config = json.load(open(os.path.join(current_dir, 'prompts/summary_config.json'), 'r'))
+        self.summary_type = summary_type
         prompt_path = os.path.join(current_dir, 'prompts')
 
-        if type == 'Base':
+        if summary_type == 'Base':
             prompt = open(os.path.join(prompt_path, self.config['base']['prompt'])).read()
             is_parser = self.config['base']['parser']
-        elif type == 'CoD':
+        elif summary_type == 'CoD':
             prompt = open(os.path.join(prompt_path, self.config['cod']['prompt'])).read()
             is_parser = self.config['cod']['parser']
-        elif type == 'CoE':
+        elif summary_type == 'CoE':
             prompt = open(os.path.join(prompt_path, self.config['coe']['prompt'])).read()
             is_parser = self.config['coe']['parser']
-        elif type == 'CoKG':
+        elif summary_type == 'CoKG':
             prompt = open(os.path.join(prompt_path, self.config['cokg']['prompt'])).read()
             is_parser = self.config['cokg']['parser']
         else:
@@ -40,4 +41,9 @@ class Summary:
         else:
             chain = prompt | llm
 
-        return chain.invoke({'Document': sample['document']})
+        if (self.summary_type == 'Base') or (self.summary_type == 'CoE'):
+            return {'Summary':chain.invoke({'Document': sample['document']}).content}
+        elif self.summary_type == 'CoD':
+            return {'Summary':chain.invoke({'ARTICLE': sample['document']})[-1]['Denser_Summary']}
+        else:  
+            return chain.invoke({'Document': sample['document']})
