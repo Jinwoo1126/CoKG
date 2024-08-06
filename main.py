@@ -15,6 +15,7 @@ from src.utils import draw_knowledge_graph
 
 ## Load .env and OpenAI API key
 load_dotenv()
+openai_key = os.getenv("OPENAI_API")
 
 # Seed
 seed = 42

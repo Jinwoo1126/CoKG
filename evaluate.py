@@ -45,7 +45,7 @@ def evaluate_geval(args, results):
     hypotheses = [r['Summary'] for r in results]
 
     geval = GEval(args, openai_key, hypotheses, references)
-    #geval.run()
+    geval.run()
     geval_score = geval.evaluate()
 
     eval_string = ''
@@ -76,16 +76,18 @@ if __name__ == "__main__":
     method_type = args.results.split("/")[-1][:-13]
     
     if args.type == 'rouge':
-        eval = evaluate_rouge(results)
+        eval, score_df = evaluate_rouge(results)
     elif args.type == 'geval':
         eval = evaluate_geval(args, results)
     elif args.type == 'all':
         eval = ''
-        eval += evaluate_rouge(results)
+        eval_str, score_df = evaluate_rouge(results)
+        eval += eval_str
         eval += evaluate_geval(args, results)
     else:
         eval = ''
-        eval += evaluate_rouge(results)
+        eval_str, score_df = evaluate_rouge(results)
+        eval += eval_str
         eval += evaluate_geval(args, results)
 
     with open(args.save_fp + f'{method_type}_evaluation.txt', 'w') as f:
