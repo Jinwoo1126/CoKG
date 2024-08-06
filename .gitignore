@@ -1,8 +1,13 @@
 ## environment file
 .env
+coherence.json
+consistency.json
+fluency.json
+relevance.json
 
 ## python cache
 __pycache__/
+.DS_Store
 
 ## python env
 cokg/
