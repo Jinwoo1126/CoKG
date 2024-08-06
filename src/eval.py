@@ -8,7 +8,6 @@ from tqdm import tqdm
 import numpy as np
 from openai import OpenAI
 from rouge_score import rouge_scorer
-from scipy.stats import spearmanr, pearsonr, kendalltau
 
 
 current_file_path = os.path.abspath(__file__)
@@ -108,6 +107,8 @@ class GEval:
                 for response in all_responses:
                     all_scores = [parse_output(x) for x in response['Responses']]
                     score = sum(all_scores) / len(all_scores)
+                    if score > 5:
+                        continue
                     scores[metric] += score
                 scores[metric] /= len(all_responses)
 
