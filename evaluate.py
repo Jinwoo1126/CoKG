@@ -1,5 +1,6 @@
 import os
 import json
+import pandas as pd
 
 from argparse import ArgumentParser
 from dotenv import load_dotenv
@@ -13,7 +14,13 @@ def evaluate_rouge(results):
     hypotheses = [r['Summary'] for r in results]
 
     rouge_score = rouge(hypotheses, references)
-
+    keys_to_extract = ['precision', 'recall', 'fmeasure']
+    score_df = pd.DataFrame()
+    for key in rouge_score.keys():
+        filtered_dict = {key_: rouge_score[key].pop(key_) for key_ in keys_to_extract}
+        temp = pd.DataFrame(filtered_dict)
+        temp.columns = [f'{key}_{col}' for col in temp.columns]
+        score_df = pd.concat([score_df, temp], axis=1)    
     eval_string = ''
     print("ROUGE Scores")
     print("============")
@@ -27,7 +34,7 @@ def evaluate_rouge(results):
 
     eval_string += '\nROUGE-1\n' + rouge1 + '\nROUGE-2\n' + rouge2 + '\nROUGE-L\n' + rougel + '\n\n'
 
-    return eval_string
+    return eval_string, score_df
 
 
 def evaluate_geval(args, results):
@@ -64,9 +71,10 @@ if __name__ == "__main__":
     with open(args.results, 'r') as f:
         results = json.load(f)
 
-    references = [r['Document'] for r in results]
+    references = [r['Ground Truth'] for r in results]
     hypotheses = [r['Summary'] for r in results]
-
+    method_type = args.results.split("/")[-1][:-13]
+    
     if args.type == 'rouge':
         eval = evaluate_rouge(results)
     elif args.type == 'geval':
@@ -80,7 +88,7 @@ if __name__ == "__main__":
         eval += evaluate_rouge(results)
         eval += evaluate_geval(args, results)
 
-    with open(args.save_fp + 'evaluation.txt', 'w') as f:
+    with open(args.save_fp + f'{method_type}_evaluation.txt', 'w') as f:
         f.write(eval)
-
     
+    score_df.to_csv(args.save_fp + f'{method_type}_raw_evaluation.csv', index=False)

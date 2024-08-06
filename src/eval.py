@@ -5,6 +5,7 @@ import copy
 import re
 
 from tqdm import tqdm
+import numpy as np
 from openai import OpenAI
 from rouge_score import rouge_scorer
 from scipy.stats import spearmanr, pearsonr, kendalltau
@@ -28,25 +29,22 @@ def parse_output(output):
 
 def rouge(hypotheses, references):
     scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
-    
     score = {
-        'rouge1': {'precision': 0, 'recall': 0, 'fmeasure': 0},
-        'rouge2': {'precision': 0, 'recall': 0, 'fmeasure': 0},
-        'rougeL': {'precision': 0, 'recall': 0, 'fmeasure': 0},
+        'rouge1': {'precision': list(), 'recall': list(), 'fmeasure': list()},
+        'rouge2': {'precision': list(), 'recall': list(), 'fmeasure': list()},
+        'rougeL': {'precision': list(), 'recall': list(), 'fmeasure': list()},
     }
-
     for ref, hyp in tqdm(zip(references, hypotheses)):
         scores = scorer.score(ref, hyp)
         for key, value in scores.items():
-            score[key]['precision'] += value.precision
-            score[key]['recall'] += value.recall
-            score[key]['fmeasure'] += value.fmeasure
-
+            score[key]['precision'] += [value.precision]
+            score[key]['recall'] += [value.recall]
+            score[key]['fmeasure'] += [value.fmeasure]
     for key in score.keys():
-        score[key]['precision'] /= len(hypotheses)
-        score[key]['recall'] /= len(hypotheses)
-        score[key]['fmeasure'] /= len(hypotheses)
-    
+        score[key]['precision_mean'] = np.mean(score[key]['precision'])
+        score[key]['recall_mean'] = np.mean(score[key]['recall'])
+        score[key]['fmeasure_mean'] = np.mean(score[key]['fmeasure'])
+        score[key]['fmeasure_std'] = np.std(score[key]['fmeasure'])
     return score
 
 
