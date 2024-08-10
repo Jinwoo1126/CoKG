@@ -30,9 +30,11 @@ def evaluate_rouge(results):
     rouge2 = print_scores(rouge_score['rouge2'])
     print("ROUGE-L")
     rougel = print_scores(rouge_score['rougeL'])
+    print("ROUGE-S")
+    rouges = print_scores(rouge_score['rougeS'])
     print("============")
 
-    eval_string += '\nROUGE-1\n' + rouge1 + '\nROUGE-2\n' + rouge2 + '\nROUGE-L\n' + rougel + '\n\n'
+    eval_string += '\nROUGE-1\n' + rouge1 + '\nROUGE-2\n' + rouge2 + '\nROUGE-L\n' + rougel + '\nROUGE-S\n' + rouges +'\n\n'
 
     return eval_string, score_df
 
