@@ -76,7 +76,7 @@ def evaluate_geval(args, results):
     hypotheses = [r['Summary'] for r in results]
 
     geval = GEval(args, openai_key, hypotheses, references)
-    geval.run()
+    #geval.run()
     geval_score = geval.evaluate()
 
     eval_string = ''
@@ -99,7 +99,7 @@ def evaluate_halueval(args, results):
     hypotheses = [r['Summary'] for r in results]
 
     halueval = HaluEval(args, openai_key, hypotheses, references)
-    halueval.run()
+    #halueval.run()
     halueval_score = halueval.evaluate()
 
     eval_string = ''
