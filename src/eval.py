@@ -4,6 +4,8 @@ import json
 import copy
 import re
 
+from collections import Counter
+from itertools import combinations
 from tqdm import tqdm
 import numpy as np
 from openai import OpenAI
@@ -26,12 +28,31 @@ def parse_output(output):
     return score
 
 
+def skip_bigrams(sentence, k=2):
+    words = sentence.split()
+    return [(words[i], words[j]) for i, j in combinations(range(len(words)), 2) if j-i <= k]
+
+def rouge_s(reference, hypothesis, k=2):
+    reference_bigrams = Counter(skip_bigrams(reference, k))
+    hypothesis_bigrams = Counter(skip_bigrams(hypothesis, k))
+
+    overlap = sum((reference_bigrams & hypothesis_bigrams).values())
+    possible = sum(reference_bigrams.values())
+    generated = sum(hypothesis_bigrams.values())
+
+    recall = overlap / possible if possible > 0 else 0.0
+    precision = overlap / generated if generated > 0 else 0.0
+    f1_score = 2 * recall * precision / (recall + precision) if (recall + precision) > 0 else 0.0
+    return {'recall': recall, 'precision': precision, 'f1_score': f1_score}
+
+
 def rouge(hypotheses, references):
     scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
     score = {
         'rouge1': {'precision': list(), 'recall': list(), 'fmeasure': list()},
         'rouge2': {'precision': list(), 'recall': list(), 'fmeasure': list()},
         'rougeL': {'precision': list(), 'recall': list(), 'fmeasure': list()},
+        'rougeS': {'precision': list(), 'recall': list(), 'fmeasure': list()}
     }
     for ref, hyp in tqdm(zip(references, hypotheses)):
         scores = scorer.score(ref, hyp)
@@ -39,6 +60,10 @@ def rouge(hypotheses, references):
             score[key]['precision'] += [value.precision]
             score[key]['recall'] += [value.recall]
             score[key]['fmeasure'] += [value.fmeasure]
+        rouge_s_score = rouge_s(ref, hyp)
+        score['rougeS']['precision'] += [rouge_s_score['precision']]
+        score['rougeS']['recall'] += [rouge_s_score['recall']]
+        score['rougeS']['fmeasure'] += [rouge_s_score['f1_score']]
     for key in score.keys():
         score[key]['precision_mean'] = np.mean(score[key]['precision'])
         score[key]['recall_mean'] = np.mean(score[key]['recall'])
