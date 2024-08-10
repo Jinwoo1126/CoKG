@@ -13,6 +13,11 @@ CoKG(Chain_of_Knowledge_Graph) Prompting Method for Text Summarization
 $ pip install -r requirements.txt
 ```
 
+```shell
+## .env
+OPENAI_API = "sk-xxx"
+```
+
 ### Run Scripts
 
 
@@ -47,16 +52,16 @@ $ python evaluate.py -t 'all'
 ### ROUGE-1
 | precision | recall | fmeasure |
 |-----------|--------|----------|
-| 0.9286    | 0.084  | 0.1497   |
+| 0.5214    | 0.3039  | 0.3738   |
 ### ROUGE-2
 | precision | recall | fmeasure |
 |-----------|--------|----------|
-| 0.5239    | 0.0479 | 0.0852   |
+| 0.1524    | 0.0894 | 0.1097   |
 ### ROUGE-L
 | precision | recall | fmeasure |
 |-----------|--------|----------|
-| 0.6589    | 0.0599 | 0.1066   |
+| 0.2581    | 0.1514 | 0.1855   |
 ### GEval
 | coherence | consistency | fluency | relevance |
 |-----------|-------------|---------|-----------|
-| 4.05      | 4.15        | 2.75    | 4.4       |
+| 4.3185      | 4.515        | 2.64    | 4.6105       |

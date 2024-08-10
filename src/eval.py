@@ -50,6 +50,7 @@ def rouge(hypotheses, references):
 class GEval:
     def __init__(self, args, api_key, hypotheses, references):
         self.args = args
+        self.method_type = args.results.split("/")[-1].split("_")[0]
         self.api_key = api_key
         self.hypotheses = hypotheses
         self.references = references
@@ -80,7 +81,7 @@ class GEval:
                     stop=None,
                     n=20
                 )
-                time.sleep(0.5)
+                time.sleep(0.1)
 
                 all_responses = [_response.choices[i].message.content for i in
                                     range(len(_response.choices))]
@@ -93,7 +94,7 @@ class GEval:
                 results.append(new_json)
 
             os.makedirs(self.args.save_fp, exist_ok=True)
-            with open(os.path.join(self.args.save_fp, metric + '.json'), 'w') as f:
+            with open(os.path.join(self.args.save_fp, self.method_type + '_' + metric + '.json'), 'w') as f:
                 json.dump(results, f, indent=4)
 
     def evaluate(self):
@@ -102,7 +103,7 @@ class GEval:
                   'fluency': 0, 
                   'relevance': 0}
         for metric in self.metrics.keys():
-            with open (os.path.join(self.args.save_fp, metric + '.json'), 'r') as f:
+            with open (os.path.join(self.args.save_fp, self.method_type + '_' + metric + '.json'), 'r') as f:
                 all_responses = json.load(f)
                 for response in all_responses:
                     all_scores = [parse_output(x) for x in response['Responses']]
@@ -111,5 +112,65 @@ class GEval:
                         continue
                     scores[metric] += score
                 scores[metric] /= len(all_responses)
+
+        return scores
+    
+
+class HaluEval:
+    def __init__(self, args, api_key, hypotheses, references):
+        self.args = args
+        self.method_type = args.results.split("/")[-1].split("_")[0]
+        self.api_key = api_key
+        self.hypotheses = hypotheses
+        self.references = references
+        self.metrics = {
+            'hallucination': open(os.path.join(current_dir, 'halueval', 'halu_summarization.txt')).read(),
+        }
+
+    def run(self):
+        for metric in self.metrics.keys():
+            results = []
+            for i, (hyp, ref) in tqdm(enumerate(zip(self.hypotheses, self.references))):    
+                instruction = copy.deepcopy(self.metrics[metric])
+
+                message = [
+                    {"role": "system", "content": "You are a summary judge. You MUST determine if the provided summary contains non-factual or hallucinated information. The answer you give MUST be \"Yes\" or \"No\""},
+                    {"role": "user", "content": instruction +
+                                                "\n\n#Document#: " + ref +
+                                                "\n#Summary#: " + hyp +
+                                                "\n#Your Judgement#: "}
+                ]
+            
+                client = OpenAI(api_key=self.api_key)
+                _response = client.chat.completions.create(
+                    model=self.args.model,
+                    messages=message,
+                    temperature=0,
+                )
+                time.sleep(0.1)
+
+                response = _response.choices[0].message.content
+
+                new_json = {
+                    'Document': ref,
+                    'Summary': hyp,
+                    'Responses': response
+                }
+
+                results.append(new_json)
+
+            os.makedirs(self.args.save_fp, exist_ok=True)
+            with open(os.path.join(self.args.save_fp, self.method_type + '_' + metric + '.json'), 'w') as f:
+                json.dump(results, f, indent=4)
+
+    def evaluate(self):
+        scores = {'hallucination': 0,}
+        for metric in self.metrics.keys():
+            with open (os.path.join(self.args.save_fp, self.method_type + '_' + metric + '.json'), 'r') as f:
+                all_responses = json.load(f)
+                for response in all_responses:
+                    check = response['Responses'].lower()
+                    if 'yes' in check:
+                        scores[metric] += 1
 
         return scores
