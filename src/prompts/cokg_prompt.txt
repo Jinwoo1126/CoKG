@@ -1,42 +1,40 @@
 Document: {Document}
-Based on the given document, identify the entities and relationships that are the components of the knowledge graph for summarization.
+You will receive multiple documents that present various perspectives on a single event or topic in an integrated form.
+Based on the documents, identify the entities and relationships to construct a knowledge graph that describes and reasons about the event or topic.
 
-knowledge Graph Components:
-- Head (Subject): The entity to be described
-- Relation (Predicate): The relationship between the subject and object
-- Tail (Object): The entity which describes or be related to the subject
+Knowledge Graph Components:
 
-Remember that you should obtain the knowledge graph components with sequential steps as followings.
+- Head (subject) : The entity from the given documents
+- Relation : The relationship between the 'Head' and 'Tail' can be expressed as an adjective, verb, phrasal verb, or a similar type of word.
+- Tail (object) : The entity which describes or be related to the subject
 
-Step 1. Identify Entities:
-Identify and extract entities from the document.
-Ensure that you capture the entities and describe them in simple and intuitive words. (e.g., people, places, organizations, key concepts, etc.).
+Obtain the knowledge graph through following steps.
 
-Step 2. Identify Relations:
-Identify and extract relations between the entities extracted from the document.
-Focus on specifying how predictates have connections with the entities.
-Ensure that you capture the relations and describe them in simple and intuitive words.
+Step 1. Identify entities:
+Identify and extract entities from the given documents.
+Ensure that you capture the important entities and context
 
-Step 3. Evaluate Relation Strength:
-Identify and evaluate the strength of relations between the entities extracted from the document, assigning a score from 1 to 10 (1 being weakest, 10 strongest, and 5 middle). 
-Evaluate strength based on frequency (how often the relation appears) and contextual importance (how critical the relation is to the document's main themes). 
-Combine these evaluations to assign an overall score for each relation.
+Step 2. Construct the relationships:
+Construct relationships between the key entities extracted from the given documents.
+Ensure that you capture the contextually important relationships.
 
-Step 4. Review Document Information:
-Please check that the knowledge graph includes the information from the given document.
-Compare the knowledge graph with the given document to find any missing entities and relationships. 
-If you find any, please update the knowledge graph accordingly.
+Step 3. Chain the entities:
+Since all entities can have multiple relationships expressed in parallel or sequentially, please connect each node as deeply as possible. These richly chained relationships will provide useful contextual information in summarization. Ensure the graph captures all key information and context.
 
-Step 5. Consolidate Entities and Relations:
-Consolidate entities considered the same based on context into a consistent representation. (e.g., "IBM" and "International Business Machines" into "IBM", "Korean Netflix series" and "Korea Netflix series" into "Korean Netflix series").
-Consolidate relationships considered the same based on context into a consistent representation. (e.g., "works at" and "employed by" into "employed by", "resides in" and "lives in" into "resides in").
+Step 4. Evaluate relation strength:
+Evaluate the strength of relations between the entities extracted from the documents by assigning scores from 1 to 10 (1 being weakest, 10 strongest, and 5 middle).
+Evaluate strength between nodes based on contextual importance (how critical the relation is to the documents main themes).
+Combine these evaluations to assign overall scores for each relation.
 
-Step 6. Summarize Document:
-Summarize the given document by focusing on entities with the strongest and most frequent relations in the extracted knowledge graph. 
-Ensure the summary is cohesive, and includes key details and context for a comprehensive understanding of the main entities and their relationships.
-Use key terms and phrases from the original document in your summary for accuracy, minimal loss of information, and credibility.
-Maintain a logical flow and highlight the impact and relevance of these relationships while excluding unnecessary details.
+Step 5. Review and assess knowledge graph:
+Quantitatively evaluate knowledge graph. For example, if there exists no loss of key information and you can retrieve the main context and key entities from the knowledge graph, give 10 points. If there is some loss of information, but you can easily reason and retrieve the main context, relationships, and entities, give 7 points. However, even if the knowledge graph has sufficient information, the knowledge graph is not considered as previous examples, give 3 points. Similarly, you can give intermediate scores to some knowledge graph at ambiguous or intermediate levels, such as 0, 2, and 5 points.
+Repeat constructing knowledge graph from step 1 until you achieve 7 or higher score.
+
+Step 6. Summarize documents:
+Summarize the given documents using the knowledge graph and the given documents.
+Ensure the summary is to be coherent and contextually smooth. 
+You should reflect the nuances of the given documents as much as possible.
 
 The result in the specified JSON format. The keys in the JSON should be 'Knowledge Graph' and 'Summary'.
-For a knowledge graph, it should be a dictionary with 'Head' as the key, and the values should be a matched list with 'Relation', 'Tail', and 'Relation Strength' as the keys, respectively.
+For a knowledge graph, it should be a dictionary with 'Head' as the key, and the values should be a matched list with 'Relation', 'Tail', and 'Relation Strength' as the keys, respectively. Please check the JSON file is valid or not. If not valid, convert it valid format.
 Answer in JSON without unnecessary introductory text or meta comments.
