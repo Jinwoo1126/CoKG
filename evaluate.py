@@ -5,7 +5,8 @@ import pandas as pd
 from argparse import ArgumentParser
 from dotenv import load_dotenv
 
-from src.eval import rouge, GEval, HaluEval
+
+from src.eval import rouge, meteor, GEval, HaluEval
 from src.utils import print_scores
 
 
@@ -16,25 +17,53 @@ def evaluate_rouge(results):
     rouge_score = rouge(hypotheses, references)
     keys_to_extract = ['precision', 'recall', 'fmeasure']
     score_df = pd.DataFrame()
+
     for key in rouge_score.keys():
         filtered_dict = {key_: rouge_score[key].pop(key_) for key_ in keys_to_extract}
         temp = pd.DataFrame(filtered_dict)
         temp.columns = [f'{key}_{col}' for col in temp.columns]
         score_df = pd.concat([score_df, temp], axis=1)    
+
     eval_string = ''
     print("ROUGE Scores")
     print("============")
     print("ROUGE-1")
-    rouge1 = print_scores(rouge_score['rouge1'])
+    rouge1_ = print_scores(rouge_score['rouge1'])
     print("ROUGE-2")
-    rouge2 = print_scores(rouge_score['rouge2'])
+    rouge2_ = print_scores(rouge_score['rouge2'])
     print("ROUGE-L")
-    rougel = print_scores(rouge_score['rougeL'])
+    rougel_ = print_scores(rouge_score['rougeL'])
     print("ROUGE-S")
-    rouges = print_scores(rouge_score['rougeS'])
+    rouges_ = print_scores(rouge_score['rougeS'])
     print("============")
 
-    eval_string += '\nROUGE-1\n' + rouge1 + '\nROUGE-2\n' + rouge2 + '\nROUGE-L\n' + rougel + '\nROUGE-S\n' + rouges +'\n\n'
+    eval_string += '\nROUGE-1\n' + rouge1_ + '\nROUGE-2\n' + rouge2_ + '\nROUGE-L\n' + rougel_ + '\nROUGE-S\n' + rouges_ +'\n\n'
+
+    return eval_string, score_df
+
+
+def evaluate_meteor(results):
+    references = [r['Ground Truth'] for r in results]
+    hypotheses = [r['Summary'] for r in results]
+
+    meteor_score = meteor(hypotheses, references)
+    keys_to_extract = ['meteor_score']
+    score_df = pd.DataFrame()
+
+    for key in meteor_score.keys():
+        filtered_dict = {key_: meteor_score[key].pop(key_) for key_ in keys_to_extract}
+        temp = pd.DataFrame(filtered_dict)
+        temp.columns = [f'{key}_{col}' for col in temp.columns]
+        score_df = pd.concat([score_df, temp], axis=1)    
+
+    eval_string = ''
+    print("METEOR Scores")
+    print("============")
+    print("METEOR")
+    meteor_ = print_scores(meteor_score['meteor'])
+    print("============")
+
+    eval_string += '\nMETEOR\n' + meteor_ + '\n\n'
 
     return eval_string, score_df
 
@@ -54,10 +83,10 @@ def evaluate_geval(args, results):
     print("GEval Scores")
     print("============")
     print("GEval")
-    geval = print_scores(geval_score)
+    geval_ = print_scores(geval_score)
     print("============")
 
-    eval_string += '\nGEval\n' + geval + '\n\n'
+    eval_string += '\nGEval\n' + geval_ + '\n\n'
 
     return eval_string
 
@@ -77,17 +106,17 @@ def evaluate_halueval(args, results):
     print("HaluEval Scores")
     print("============")
     print("HaluEval")
-    halueval = print_scores(halueval_score)
+    halueval_ = print_scores(halueval_score)
     print("============")
 
-    eval_string += '\nHaluEval\n' + halueval + '\n\n'
+    eval_string += '\nHaluEval\n' + halueval_ + '\n\n'
 
     return eval_string
 
 
 if __name__ == "__main__":
     argparser = ArgumentParser("Evaluate text with various metrics.")
-    argparser.add_argument("-t", "--type", choices=['rouge', 'geval', 'halu', 'all'], required=True, help="Choose evaluation metrics: 'rouge', 'geval', or 'both'.")
+    argparser.add_argument("-t", "--type", choices=['rouge', 'meteor', 'geval', 'halu', 'all'], required=True, help="Choose evaluation metrics: 'rouge', 'geval', or 'both'.")
     argparser.add_argument("-m", "--model", type=str, default='gpt-4o-mini', help="Model to use")
     argparser.add_argument("-r", "--results", type=str, default='results/results.json', help="Results file")
     argparser.add_argument("-s", "--save_fp", type=str, default='results/')
@@ -102,6 +131,8 @@ if __name__ == "__main__":
     
     if args.type == 'rouge':
         eval, score_df = evaluate_rouge(results)
+    elif args.type == 'meteor':
+        eval, score_df = evaluate_meteor(results)
     elif args.type == 'geval':
         eval = evaluate_geval(args, results)
     elif args.type == 'halu':
@@ -110,11 +141,15 @@ if __name__ == "__main__":
         eval = ''
         eval_str, score_df = evaluate_rouge(results)
         eval += eval_str
+        eval_str, score_df = evaluate_meteor(results)
+        eval += eval_str
         eval += evaluate_geval(args, results)
         eval += evaluate_halueval(args, results)
     else:
         eval = ''
         eval_str, score_df = evaluate_rouge(results)
+        eval += eval_str
+        eval_str, score_df = evaluate_meteor(results)
         eval += eval_str
         eval += evaluate_geval(args, results)
         eval += evaluate_halueval(args, results)

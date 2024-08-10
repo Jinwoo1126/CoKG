@@ -3,6 +3,7 @@ import time
 import json
 import copy
 import re
+import nltk
 
 from collections import Counter
 from itertools import combinations
@@ -10,6 +11,8 @@ from tqdm import tqdm
 import numpy as np
 from openai import OpenAI
 from rouge_score import rouge_scorer
+from nltk import word_tokenize
+from nltk.translate.meteor_score import meteor_score
 
 
 current_file_path = os.path.abspath(__file__)
@@ -25,12 +28,15 @@ def parse_output(output):
             score = 0
     else:
         score = 0
+
     return score
 
 
 def skip_bigrams(sentence, k=2):
     words = sentence.split()
+    
     return [(words[i], words[j]) for i, j in combinations(range(len(words)), 2) if j-i <= k]
+
 
 def rouge_s(reference, hypothesis, k=2):
     reference_bigrams = Counter(skip_bigrams(reference, k))
@@ -43,6 +49,7 @@ def rouge_s(reference, hypothesis, k=2):
     recall = overlap / possible if possible > 0 else 0.0
     precision = overlap / generated if generated > 0 else 0.0
     f1_score = 2 * recall * precision / (recall + precision) if (recall + precision) > 0 else 0.0
+
     return {'recall': recall, 'precision': precision, 'f1_score': f1_score}
 
 
@@ -69,6 +76,21 @@ def rouge(hypotheses, references):
         score[key]['recall_mean'] = np.mean(score[key]['recall'])
         score[key]['fmeasure_mean'] = np.mean(score[key]['fmeasure'])
         score[key]['fmeasure_std'] = np.std(score[key]['fmeasure'])
+
+    return score
+
+
+def meteor(hypotheses, references):
+    nltk.download('wordnet')
+    score = {
+        'meteor': {'meteor_score':list()}
+    }
+    for ref, hyp in tqdm(zip(references, hypotheses)):
+        score['meteor']['meteor_score'] += [meteor_score([word_tokenize(ref)], word_tokenize(hyp))]
+    
+    score['meteor']['meteor_mean'] = np.mean(score['meteor']['meteor_score'])
+    score['meteor']['meteor_std'] = np.std(score['meteor']['meteor_score'])
+
     return score
 
 
