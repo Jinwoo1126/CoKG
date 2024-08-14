@@ -43,7 +43,7 @@ $ python evaluate.py -t 'all'
 
 #### (optional)
 ```shell
-"-t", "--type"          : Evaluation Type(default : All, ['rouge', 'geval', 'all']])
+"-t", "--type"          : Evaluation Type(default : All, ['rouge', 'meteor', 'geval', 'all']])
 "-m", "--model"         : chat model(default : gpt-4o-mini)
 "-r", "--results"       : result file path(default : results/results.json)
 "-s", "--save_fp"       : save_path(default : results/)
