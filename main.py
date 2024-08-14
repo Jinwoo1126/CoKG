@@ -30,6 +30,7 @@ if __name__ == "__main__":
     argparser.add_argument("-m", "--model", type=str, default='gpt-4o', help="Model to use")
     argparser.add_argument("-n", "--num_samples", type=int, default=100, help="Number of samples to use")
     argparser.add_argument("-o", "--output", type=str, default='results/results.json', help="Output file")
+    argparser.add_argument("-d", "--dummy", type=int, default=0, help="Use dummy data")
     args = argparser.parse_args()
 
     # set llm model
@@ -45,11 +46,21 @@ if __name__ == "__main__":
     ## Load dataset & sample random article
     ds = load_dataset("alexfabbri/multi_news", "1.0.0")
     test_data = ds['test'].shuffle(seed=seed).select(range(100))
+    if args.dummy:    
+        train_data = ds['train'][-2*args.dummy:]
+        dummy_docs = [doc.split('\n \n')[-1] for doc in train_data['document']]
 
     ## get summary results
     results = []
     for idx, sample in tqdm(enumerate(test_data.select(range(args.num_samples)))):
         summary = Summary(summary_type=args.type)
+
+        if args.dummy:
+            dummied_sample = ''.join([doc + '\n \n' for doc in dummy_docs[:args.dummy]]) \
+                + sample['document'] \
+                + ''.join(['\n \n' + doc  for doc in dummy_docs[args.dummy:]])
+            sample['document'] = dummied_sample
+
         result =  summary.summairze(llm, sample)
         result['Document'] = sample['document']
         result['Ground Truth'] = sample['summary']
