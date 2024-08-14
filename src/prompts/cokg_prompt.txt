@@ -14,12 +14,14 @@ Step 1. Identify entities:
 Identify and extract entities from the given documents.
 Ensure that you capture the important entities and context
 
-Step 2. Construct the relationships:
-Construct relationships between the key entities extracted from the given documents.
+Step 2. Construct the relations:
+Construct relations between the entities extracted from the given documents.
 Ensure that you capture the contextually important relationships.
 
-Step 3. Chain the entities:
-Since all entities can have multiple relationships expressed in parallel or sequentially, please connect each node as deeply as possible. These richly chained relationships will provide useful contextual information in summarization. Ensure the graph captures all key information and context.
+Step 3. Expand the chain between entities:
+Since each entity can have multiple relationships, you should adequately expand connections between entities.
+These richly chained knowledge graph will provide useful information in summarization.
+Ensure the graph captures all key information and context.
 
 Step 4. Evaluate relation strength:
 Evaluate the strength of relations between the entities extracted from the documents by assigning scores from 1 to 10 (1 being weakest, 10 strongest, and 5 middle).
@@ -27,14 +29,15 @@ Evaluate strength between nodes based on contextual importance (how critical the
 Combine these evaluations to assign overall scores for each relation.
 
 Step 5. Review and assess knowledge graph:
-Quantitatively evaluate knowledge graph. For example, if there exists no loss of key information and you can retrieve the main context and key entities from the knowledge graph, give 10 points. If there is some loss of information, but you can easily reason and retrieve the main context, relationships, and entities, give 7 points. However, even if the knowledge graph has sufficient information, the knowledge graph is not considered as previous examples, give 3 points. Similarly, you can give intermediate scores to some knowledge graph at ambiguous or intermediate levels, such as 0, 2, and 5 points.
+Quantitatively evaluate knowledge graph. For example, if there exists no loss of key information and you can retrieve the main context and key entities from the knowledge graph only, give 10 points. If there is some loss of information, but you can easily reason and retrieve the main context, relationships, and entities, give 7 points. However, even if the knowledge graph has sufficient information, the knowledge graph is not considered as previous examples, give low score such as 3 points. Similarly, you can give intermediate scores to some knowledge graph at ambiguous or intermediate levels, such as 0, 2, and 5 points.
 Repeat constructing knowledge graph from step 1 until you achieve 7 or higher score.
 
 Step 6. Summarize documents:
 Summarize the given documents using the knowledge graph and the given documents.
-Ensure the summary is to be coherent and contextually smooth. 
+Ensure the summary is to be coherent and contextually smooth.
+To ensure clarity, you could include detailed phrases in the summary.
 You should reflect the nuances of the given documents as much as possible.
 
 The result in the specified JSON format. The keys in the JSON should be 'Knowledge Graph' and 'Summary'.
-For a knowledge graph, it should be a dictionary with 'Head' as the key, and the values should be a matched list with 'Relation', 'Tail', and 'Relation Strength' as the keys, respectively. Please check the JSON file is valid or not. If not valid, convert it valid format.
+For a knowledge graph, it should be a dictionary with 'Head' as the key, and the values should be a matched list with 'Relation', 'Tail', and 'Relation Strength' as the keys, respectively. You must check whether the JSON format is valid or not. If not valid, convert it valid format.
 Answer in JSON without unnecessary introductory text or meta comments.
