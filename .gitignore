@@ -16,5 +16,9 @@ cokg/
 .ipynb_checkpoints/
 !.ipynb_checkpoints/specific_file.ipynb
 
+<<<<<<< HEAD
 ## bakcup
+=======
+##backup files
+>>>>>>> 69ccf6e ((feat:16) update prompt)
 backup/
